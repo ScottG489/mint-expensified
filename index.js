@@ -2,14 +2,13 @@
 // const expensifyConfig = require('./test-config').expensify
 const mintConfig = require('./config').mint
 const expensifyConfig = require('./config').expensify
-// TODO: There's a promise-based request library too we might want to try using
-let request = require('request')
+let request = require('request-promise-native');
 let fs = require('fs');
 const Entities = require('html-entities').XmlEntities;
 const entities = new Entities();
 
 
-function main() {
+async function main() {
   /**
    * TODO: https://freemarker.apache.org/docs/ref_builtins_string.html#ref_builtin_matches
    * TODO:   See above for things that can be done in the template such as escaping values for json, decoding
@@ -18,30 +17,26 @@ function main() {
   let reportTemplate = fs.readFileSync('expensify_template.ftl', 'utf8')
   let form = getReportExportForm(reportTemplate);
 
-  request(
-    getExpensifyRequest(form),
-    downloadExpensifyReport
-  );
+  let fileName = await request(getExpensifyRequest(form));
+  return downloadExpensifyReport(fileName)
 }
 
-function downloadExpensifyReport(error, response, body) {
-  let form = getReportDownloadForm(body);
+async function downloadExpensifyReport(fileName) {
+  let form = getReportDownloadForm(fileName);
 
-  request(
-    getExpensifyRequest(form),
-    searchMint
-  );
+  let body = await request(getExpensifyRequest(form));
+  return searchMint(body)
 }
 /**
  * TODO: Mint search queries can match on categories too. Need to verify an expense doesn't have the same name as a category
  * TODO:   NOTE that above will NOT be an issue if we bulk download transactions via a broad search or export first since we can do exact matches
  */
-async function searchMint(error, response, body) {
+async function searchMint(body) {
   let expenses = JSON.parse(body)
   // console.log(expenses)
   let mint = await require('pepper-mint')(mintConfig.username, mintConfig.password, mintConfig.ius_session, mintConfig.thx_guid)
   let allTrans = await getAllTransactions(mint, 0)
-  await expenses.map(async (expense) => {
+  return await expenses.map((expense) => {
     let transactionSearchResults = allTrans.filter((transaction) => {
       return areEqual(transaction, expense)
     })
@@ -68,6 +63,7 @@ async function searchMint(error, response, body) {
       console.log(`Expected 1 result but got ${transactionSearchResults.length}`)
       console.log(expense)
     }
+    return expense
   })
 }
 
