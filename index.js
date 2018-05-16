@@ -64,10 +64,6 @@ async function searchMint(error, response, body) {
   })
 }
 
-function getTransactions(mint, expense) {
-  return mint.getTransactions(getTransactionsQuery(expense))
-}
-
 async function getAllTransactions(mint, offset) {
   let allT = []
   let iterate = function (txns) {
@@ -87,10 +83,9 @@ async function getAllTransactions(mint, offset) {
 
     if (proceed) {
       return mint.getTransactions(getAllTransactionsQuery(offset)).then(iterate);
-      // return mint.getTransactions(args).then(iterate);
     }
   }
-  // return mint.getTransactions(getAllTransactionsQuery(offset))
+
   await iterate()
   return allT
 }
@@ -129,17 +124,6 @@ function padLeadingZero(number) {
   return `0${number.toString()}`.slice(-2)
 }
 
-
-function getTransactionsQuery(expense) {
-  return {
-    query: [
-      expense.merchant
-    ],
-    // Format dates how mint api expects them
-    startDate: expense.created.replace(/(\d+)-(\d+)-(\d+)/, "$2/$3/$1"),
-    endDate: expense.created.replace(/(\d+)-(\d+)-(\d+)/, "$2/$3/$1")
-  };
-}
 
 function getAllTransactionsQuery(offset) {
   return {
