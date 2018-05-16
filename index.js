@@ -10,9 +10,11 @@ const entities = new Entities();
 
 
 function main() {
-  // TODO: https://freemarker.apache.org/docs/ref_builtins_string.html#ref_builtin_matches
-  // TODO:  See above for things that can be done in the template such as escaping values for json, decoding
-  // TODO:  html entities (debatable if we want to do this in freemarker or here) and other useful tools.
+  /**
+   * TODO: https://freemarker.apache.org/docs/ref_builtins_string.html#ref_builtin_matches
+   * TODO:   See above for things that can be done in the template such as escaping values for json, decoding
+   * TODO:   html entities (debatable if we want to do this in freemarker or here) and other useful tools.
+   */
   let reportTemplate = fs.readFileSync('expensify_template.ftl', 'utf8')
   let form = getReportExportForm(reportTemplate);
 
@@ -30,9 +32,10 @@ function downloadExpensifyReport(error, response, body) {
     searchMint
   );
 }
-
-// TODO: Mint search queries can match on categories too. Need to verify an expense doesn't have the same name as a category
-// TODO:  NOTE that above will NOT be an issue if we bulk download transactions via a broad search or export first since we can do exact matches
+/**
+ * TODO: Mint search queries can match on categories too. Need to verify an expense doesn't have the same name as a category
+ * TODO:   NOTE that above will NOT be an issue if we bulk download transactions via a broad search or export first since we can do exact matches
+ */
 async function searchMint(error, response, body) {
   let expenses = JSON.parse(body)
   // console.log(expenses)
@@ -47,16 +50,20 @@ async function searchMint(error, response, body) {
       console.log(expense)
     }
     if (transactionSearchResults.length > 1) {
-      // TODO: We need to handle expenses which have multiple matching transactions. This is somewhat valid. If something
-      // TODO:   is purchased from the same merchant, on the same day, for the same amount then this will occur. I believe
-      // TODO:   the best solution here is to simply iterate over these transactions and tag them as reimbursable. The only downside
-      // TODO:   is that these transactions will get updated twice each which isn't a big deal.
+      /**
+       * TODO: We need to handle expenses which have multiple matching transactions. This is somewhat valid. If something
+       * TODO:   is purchased from the same merchant, on the same day, for the same amount then this will occur. I believe
+       * TODO:   the best solution here is to simply iterate over these transactions and tag them as reimbursable. The only downside
+       * TODO:   is that these transactions will get updated twice each which isn't a big deal.
+       */
       console.log("Expense with multiple matching transactions")
       console.log(expense)
       console.log(transactionSearchResults)
     } else if (transactionSearchResults.length < 1) {
-      // TODO: This is generally bad. However, currently there are a lot of manually created expenses for monthly allowances (internet, phone, etc)
-      // TODO:   Find a way to finder out these known expenses so that this shows legitimate cases where there was no match
+      /**
+       * TODO: This is generally bad. However, currently there are a lot of manually created expenses for monthly allowances (internet, phone, etc)
+       * TODO:   Find a way to finder out these known expenses so that this shows legitimate cases where there was no match
+       */
       console.log("No matching transaction found for expense: ")
       console.log(`Expected 1 result but got ${transactionSearchResults.length}`)
       console.log(expense)
