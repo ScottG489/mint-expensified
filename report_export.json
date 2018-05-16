@@ -1,0 +1,23 @@
+{
+  "type": "file",
+  "credentials": {
+    "partnerUserID": "",
+    "partnerUserSecret": ""
+  },
+  "onReceive": {
+    "immediateResponse": [
+      "returnRandomFileName"
+    ]
+  },
+  "inputSettings": {
+    "type": "combinedReportData",
+    "reportState": "REIMBURSED",
+    "limit": "30",
+    "filters": {
+      "startDate": "2000-01-01"
+    }
+  },
+  "outputSettings": {
+    "fileExtension": "json"
+  }
+}

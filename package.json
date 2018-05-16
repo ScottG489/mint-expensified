@@ -1,0 +1,16 @@
+{
+  "name": "mint",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pepper-mint": "scottg489/pepper-mint",
+    "request": "^2.81.0",
+    "html-entities": "^1.2.1"
+  }
+}
