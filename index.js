@@ -170,5 +170,4 @@ function getReportDownloadForm(fileName) {
   return 'requestJobDescription=' + JSON.stringify(reportDownload);
 }
 
-
-main()
+module.exports = main
