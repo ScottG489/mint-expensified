@@ -1,6 +1,9 @@
 const mintConfig = require('./config').mint
 const peppermint = require('pepper-mint')
 
+const TRANSACTIONS_START_DATE = "04/02/2017"
+const TRANSACTIONS_END_DATE = "01/01/9999"
+
 async function getAllTransactions(offset) {
   let mint = await peppermint(mintConfig.username, mintConfig.password, mintConfig.ius_session, mintConfig.thx_guid)
   let allT = []
@@ -33,8 +36,8 @@ function getAllTransactionsQuery(offset) {
     offset: offset,
     query: [],
     // Started at TW in April
-    startDate: "04/02/2017",
-    endDate: "01/01/9999"
+    startDate: TRANSACTIONS_START_DATE,
+    endDate: TRANSACTIONS_END_DATE
   };
 }
 

@@ -2,18 +2,24 @@ const expensifyConfig = require('./config').expensify
 let request = require('request-promise-native');
 let fs = require('fs');
 
-async function getAllExpenses() {
-  /**
-   * TODO: https://freemarker.apache.org/docs/ref_builtins_string.html#ref_builtin_matches
-   * TODO:   See above for things that can be done in the template such as escaping values for json, decoding
-   * TODO:   html entities (debatable if we want to do this in freemarker or here) and other useful tools.
-   */
-  let reportTemplate = fs.readFileSync('expensify_template.ftl', 'utf8')
-  let form = getReportExportForm(reportTemplate);
+/**
+ * TODO: https://freemarker.apache.org/docs/ref_builtins_string.html#ref_builtin_matches
+ * TODO:   See above for things that can be done in the template such as escaping values for json, decoding
+ * TODO:   html entities (debatable if we want to do this in freemarker or here) and other useful tools.
+ */
+const EXPENSIFY_TEMPLATE_PATH = 'expensify_template.ftl';
 
-  let fileName = await request(getExpensifyRequest(form));
+async function getAllExpenses() {
+  let fileName = await exportAllReports();
   let body = await downloadExpensifyReport(fileName)
   return JSON.parse(body)
+}
+
+async function exportAllReports() {
+  let reportTemplate = fs.readFileSync(EXPENSIFY_TEMPLATE_PATH, 'utf8')
+  let form = getReportExportForm(reportTemplate);
+
+  return await request(getExpensifyRequest(form));
 }
 
 async function downloadExpensifyReport(fileName) {
