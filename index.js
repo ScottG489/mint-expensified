@@ -27,10 +27,7 @@ async function downloadExpensifyReport(fileName) {
   let body = await request(getExpensifyRequest(form));
   return searchMint(body)
 }
-/**
- * TODO: Mint search queries can match on categories too. Need to verify an expense doesn't have the same name as a category
- * TODO:   NOTE that above will NOT be an issue if we bulk download transactions via a broad search or export first since we can do exact matches
- */
+
 async function searchMint(body) {
   let expenses = JSON.parse(body)
   // console.log(expenses)
@@ -57,7 +54,7 @@ async function searchMint(body) {
     } else if (transactionSearchResults.length < 1) {
       /**
        * TODO: This is generally bad. However, currently there are a lot of manually created expenses for monthly allowances (internet, phone, etc)
-       * TODO:   Find a way to finder out these known expenses so that this shows legitimate cases where there was no match
+       * TODO:   Find a way to filter out these known expenses so that this shows legitimate cases where there was no match
        */
       console.log("No matching transaction found for expense: ")
       console.log(`Expected 1 result but got ${transactionSearchResults.length}`)
