@@ -6,7 +6,7 @@ const entities = new require('html-entities').XmlEntities;
 
 async function main() {
   let allExpenses = expensify.getAllExpenses()
-  let allTrans = mint.getAllTransactions(0)
+  let allTrans = mint.getAllTransactions()
   return match(await allTrans, await allExpenses)
 }
 
