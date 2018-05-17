@@ -1,4 +1,4 @@
-const mintConfig = require('./config').mint
+const mintConfig = require('../../config').mint
 const peppermint = require('pepper-mint')
 
 const TRANSACTIONS_START_DATE = "04/02/2017"

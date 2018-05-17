@@ -1,4 +1,4 @@
-const expensifyConfig = require('./config').expensify
+const expensifyConfig = require('../../config').expensify
 let request = require('request-promise-native');
 let fs = require('fs');
 
@@ -7,7 +7,7 @@ let fs = require('fs');
  * TODO:   See above for things that can be done in the template such as escaping values for json, decoding
  * TODO:   html entities (debatable if we want to do this in freemarker or here) and other useful tools.
  */
-const EXPENSIFY_TEMPLATE_PATH = 'expensify_template.ftl';
+const EXPENSIFY_TEMPLATE_PATH = 'src/expensify/expensify_template.ftl';
 
 async function getAllExpenses() {
   let fileName = await exportAllReports();
