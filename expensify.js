@@ -3,7 +3,7 @@ let request = require('request-promise-native');
 let fs = require('fs');
 
 async function getAllExpenses() {
-    /**
+  /**
    * TODO: https://freemarker.apache.org/docs/ref_builtins_string.html#ref_builtin_matches
    * TODO:   See above for things that can be done in the template such as escaping values for json, decoding
    * TODO:   html entities (debatable if we want to do this in freemarker or here) and other useful tools.
