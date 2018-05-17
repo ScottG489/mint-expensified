@@ -2,8 +2,7 @@
 // const expensifyConfig = require('./test-config').expensify
 const mint = require('./mint')
 const expensify = require('./expensify')
-const Entities = require('html-entities').XmlEntities;
-const entities = new Entities();
+const entities = new require('html-entities').XmlEntities;
 
 async function main() {
   let allExpenses = expensify.getAllExpenses()
