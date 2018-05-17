@@ -1,19 +1,17 @@
 // const mintConfig = require('./test-config').mint
 // const expensifyConfig = require('./test-config').expensify
-const mintConfig = require('./config').mint
+const mint = require('./mint')
 const expensify = require('./expensify')
 const Entities = require('html-entities').XmlEntities;
 const entities = new Entities();
 
-
 async function main() {
-  let allExpenses = await expensify.getAllExpenses()
-  return searchMint(allExpenses)
+  let allExpenses = expensify.getAllExpenses()
+  let allTrans = mint.getAllTransactions(0)
+  return match(await allTrans, await allExpenses)
 }
 
-async function searchMint(allExpenses) {
-  let mint = await require('pepper-mint')(mintConfig.username, mintConfig.password, mintConfig.ius_session, mintConfig.thx_guid)
-  let allTrans = await getAllTransactions(mint, 0)
+async function match(allTrans, allExpenses) {
   return await allExpenses.map((expense) => {
     let transactionSearchResults = allTrans.filter((transaction) => {
       return areEqual(transaction, expense)
@@ -43,32 +41,6 @@ async function searchMint(allExpenses) {
     }
     return expense
   })
-}
-
-async function getAllTransactions(mint, offset) {
-  let allT = []
-  let iterate = function (txns) {
-    let proceed = true;
-    if (txns) {
-      txns.forEach(function (txn) {
-        console.log(txn.date, txn.merchant, txn.amount);
-        allT.push(txn)
-      });
-
-      if (txns.length) {
-        offset += txns.length;
-      } else {
-        proceed = false;
-      }
-    }
-
-    if (proceed) {
-      return mint.getTransactions(getAllTransactionsQuery(offset)).then(iterate);
-    }
-  }
-
-  await iterate()
-  return allT
 }
 
 // Sanity check
@@ -103,17 +75,6 @@ function formatFromCurrentYearStyle(currentYearStyledDate) {
 
 function padLeadingZero(number) {
   return `0${number.toString()}`.slice(-2)
-}
-
-
-function getAllTransactionsQuery(offset) {
-  return {
-    offset: offset,
-    query: [],
-    // Started at TW in April
-    startDate: "04/02/2017",
-    endDate: "01/01/9999"
-  };
 }
 
 module.exports = main
