@@ -1,0 +1,16 @@
+{
+  "type": "create",
+  "credentials": {
+    "partnerUserID": "",
+    "partnerUserSecret": ""
+  },
+  "inputSettings": {
+    "type": "report",
+    "policyID": "",
+    "report": {
+      "title": ""
+    },
+    "employeeEmail": "",
+    "expenses": []
+  }
+}
