@@ -1,4 +1,5 @@
-const expensify = require('../../src/expensify/expensify')
+let expensifyConfig = require('../../test-config').expensify
+const expensify = new require('../../src/expensify/expensify')(expensifyConfig)
 const Joi = require('joi')
 const chai = require('chai');
 const expect = chai.expect

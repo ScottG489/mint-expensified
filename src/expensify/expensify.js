@@ -1,7 +1,6 @@
-// TODO: Inject config into this instead of it being hardcoded
-const expensifyConfig = require('../../test-config').expensify
 let request = require('request-promise-native');
 let fs = require('fs');
+let expensifyConfig
 
 /**
  * TODO: https://freemarker.apache.org/docs/ref_builtins_string.html#ref_builtin_matches
@@ -10,7 +9,7 @@ let fs = require('fs');
  */
 const EXPENSIFY_TEMPLATE_PATH = 'src/expensify/expensify_template.ftl';
 
-function createReport(requestInputs) {
+Expensify.prototype.createReport = function(requestInputs) {
   let requestName = 'report_create'
   let exportReportRequest = loadExpensifyRequest(requestName)
   updateRequestInputSettings(exportReportRequest, requestInputs)
@@ -40,7 +39,7 @@ function updateRequestInputSettings(request, updates) {
   Object.assign(request.inputSettings, updates)
 }
 
-async function getAllExpenses() {
+Expensify.prototype.getAllExpenses = async function () {
   let fileName = await exportAllReports();
   let body = await downloadExpensifyReport(fileName)
   return JSON.parse(body)
@@ -91,4 +90,11 @@ function loadExpensifyRequest(requestName) {
   return require(`./${requestName}`)
 }
 
-module.exports = {getAllExpenses, createReport}
+function Expensify() {}
+
+function init(config) {
+  expensifyConfig = config
+  return new Expensify()
+}
+
+module.exports = init
