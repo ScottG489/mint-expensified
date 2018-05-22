@@ -24,15 +24,21 @@ Expensify.prototype.createReport = async function (requestInputs) {
 Expensify.prototype.getReport = async function (requestInputs) {
   // TODO: Parse exportReport response for errors
   let exportedReportName = await exportReport(requestInputs);
-
-  let requestName = 'report_download'
-  let downloadReportRequest = loadExpensifyRequest(requestName)
-  updateRequest(downloadReportRequest, {fileName: exportedReportName})
-  addCredentialsToRequest(downloadReportRequest)
-  let form = createExpensifyForm(downloadReportRequest)
-  let expensifyRequest = createExpensifyRequest(form)
-  let expensifyResponse = await sendExpensifyRequest(expensifyRequest)
+  let expensifyResponse = await downloadReport(exportedReportName);
   return JSON.parse(expensifyResponse)
+}
+
+Expensify.prototype.getAllExpenses = async function () {
+  let requestInputs = {
+    inputSettings: {
+      type: "combinedReportData",
+      limit: "30",
+      filters: {
+        startDate: "2000-01-01"
+      }
+    }
+  }
+  return this.getReport(requestInputs)
 }
 
 function exportReport(requestInputs) {
@@ -44,6 +50,16 @@ function exportReport(requestInputs) {
   form = addTemplateParamToForm(form)
   let expensifyRequest = createExpensifyRequest(form)
   return sendExpensifyRequest(expensifyRequest)
+}
+
+async function downloadReport(exportedReportName) {
+  let requestName = 'report_download'
+  let downloadReportRequest = loadExpensifyRequest(requestName)
+  updateRequest(downloadReportRequest, {fileName: exportedReportName})
+  addCredentialsToRequest(downloadReportRequest)
+  let form = createExpensifyForm(downloadReportRequest)
+  let expensifyRequest = createExpensifyRequest(form)
+  return await sendExpensifyRequest(expensifyRequest);
 }
 
 function addTemplateParamToForm(form) {
@@ -80,25 +96,6 @@ function updateRequest(request, updates) {
   Object.assign(request, updates)
 }
 
-Expensify.prototype.getAllExpenses = async function () {
-  let fileName = await exportAllReports();
-  let body = await downloadExpensifyReport(fileName)
-  return JSON.parse(body)
-}
-
-async function exportAllReports() {
-  let reportTemplate = fs.readFileSync(EXPENSIFY_TEMPLATE_PATH, 'utf8')
-  let form = getReportExportForm(reportTemplate);
-
-  return await request(createExpensifyRequest(form));
-}
-
-async function downloadExpensifyReport(fileName) {
-  let form = getReportDownloadForm(fileName);
-
-  return await request(createExpensifyRequest(form));
-}
-
 function createExpensifyRequest(form) {
   return {
     url: 'https://integrations.expensify.com/Integration-Server/ExpensifyIntegrations',
@@ -108,23 +105,6 @@ function createExpensifyRequest(form) {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
   };
-}
-
-function getReportExportForm(reportTemplate) {
-  let reportExport = require('./report_export')
-  reportExport.credentials.partnerUserID = expensifyConfig.partnerUserID
-  reportExport.credentials.partnerUserSecret = expensifyConfig.partnerUserSecret
-  let form = 'requestJobDescription=' + JSON.stringify(reportExport)
-  form = form.concat('&template=' + encodeURIComponent(reportTemplate))
-  return form;
-}
-
-function getReportDownloadForm(fileName) {
-  let reportDownload = require('./report_download')
-  reportDownload.credentials.partnerUserID = expensifyConfig.partnerUserID
-  reportDownload.credentials.partnerUserSecret = expensifyConfig.partnerUserSecret
-  reportDownload.fileName = fileName
-  return 'requestJobDescription=' + JSON.stringify(reportDownload);
 }
 
 function loadExpensifyRequest(requestName) {
