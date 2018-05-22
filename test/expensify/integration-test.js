@@ -46,6 +46,49 @@ describe('expensify', function () {
         responseCode: 200
       }));
   })
+
+  it('should find a created report', async function () {
+    let expenses = [
+      {
+        date: "2000-01-01",
+        currency: "USD",
+        merchant: "Name of merchant",
+        amount: 1234
+      }
+    ]
+
+    let requestInputs = {
+      inputSettings: {
+        expenses: expenses
+      }
+    }
+
+    let newReport = await expensify.createReport(requestInputs)
+
+    requestInputs = {
+      inputSettings: {
+        type: "combinedReportData",
+        limit: "30",
+        filters: {
+          reportIDList: newReport.reportID
+        }
+      }
+    }
+
+    let report = await expensify.getReport(requestInputs)
+
+    validateSchema(
+      report[0],
+      Joi.object().keys({
+        merchant: expenses[0].merchant,
+        amount: expenses[0].amount,
+        // TODO: Why does this pass? Should we parse it as a number?
+        created: expenses[0].date,
+        modifiedMerchant: "",
+        modifiedAmount: "",
+        modifiedCreated: ""
+      }));
+  })
 });
 
 function validateSchema(actual, expectedSchema) {
