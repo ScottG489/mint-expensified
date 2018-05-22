@@ -15,6 +15,7 @@ chai.should();
  */
 describe('expensify', function () {
   it('should create a report', async function () {
+    this.timeout(30000);
     let expenses = [
       {
         date: "2000-01-01",
@@ -48,6 +49,7 @@ describe('expensify', function () {
   })
 
   it('should find a created report', async function () {
+    this.timeout(30000);
     let expenses = [
       {
         date: "2000-01-01",
