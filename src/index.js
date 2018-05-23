@@ -1,7 +1,10 @@
 // const mintConfig = require('./test-config').mint
 // const expensifyConfig = require('./test-config').expensify
 const mint = require('./mint/mint')
-const expensify = require('./expensify/expensify')
+// let expensifyConfig = require('../test-config').expensify
+let expensifyConfig = require('../config').expensify
+const expensify = new require('./expensify/expensify')(expensifyConfig)
+
 const entities = new require('html-entities').XmlEntities;
 
 async function main() {
