@@ -19,7 +19,7 @@ async function match(allTrans, allExpenses) {
     let transactionSearchResults = allTrans.filter((transaction) => {
       return areEqual(transaction, expense)
     })
-    if (expense.amount !== expense.modifiedAmount && expense.modifiedAmount !== "") {
+    if (expense.modifiedAmount !== "" && expense.amount !== expense.modifiedAmount) {
       console.log("Expense with a modified amount. This likely means that it was only partially reimbursed and you should split this transaction in mint")
       console.log(expense)
     }
