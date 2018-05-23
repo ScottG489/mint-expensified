@@ -8,7 +8,8 @@
         "created": "${expense.created}",
         "modifiedMerchant": "${expense.modifiedMerchant}",
         "modifiedAmount": "${expense.modifiedAmount}",
-        "modifiedCreated": "${expense.modifiedCreated}"
+        "modifiedCreated": "${expense.modifiedCreated}",
+        "reportName": "${report.reportName}"
 }<#if expense?has_next>,</#if>
 
         </#list>
