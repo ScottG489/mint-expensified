@@ -32,7 +32,6 @@ Expensify.prototype.getAllExpenses = async function () {
   let requestInputs = {
     inputSettings: {
       type: "combinedReportData",
-      limit: "30",
       filters: {
         startDate: "2000-01-01"
       }
