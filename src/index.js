@@ -48,7 +48,7 @@ async function match(allTrans, allExpenses) {
 // Sanity check
 function areEqual(transaction, expense) {
   // TODO: Getting pretty hacky here with the decode. We should probably transform to our own models before doing comparisons?
-  return transaction.omerchant.toUpperCase() === entities.decode(expense.merchant).toUpperCase()
+  return transaction.omerchant.toUpperCase().replace(/\s\s+/g, ' ').substring(0, 32) === entities.decode(expense.merchant).toUpperCase()
     && formatDate(transaction.odate) === expense.created
     && transaction.amount.replace(/[$.,]/g, "") === expense.amount
 }
