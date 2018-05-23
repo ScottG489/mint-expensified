@@ -1,8 +1,9 @@
-// const mintConfig = require('./test-config').mint
-// const expensifyConfig = require('./test-config').expensify
-const mint = require('./mint/mint')
+const mintConfig = require('../config').mint
+const mint = new require('./mint/mint')(mintConfig)
+
 // let expensifyConfig = require('../test-config').expensify
 let expensifyConfig = require('../config').expensify
+// TODO: I believe this is causing 'npm test' to fail and im not sure why
 const expensify = new require('./expensify/expensify')(expensifyConfig)
 
 const entities = new require('html-entities').XmlEntities;

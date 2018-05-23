@@ -1,10 +1,10 @@
-const mintConfig = require('../../config').mint
 const peppermint = require('pepper-mint')
+let mintConfig
 
 const TRANSACTIONS_START_DATE = "04/02/2017"
 const TRANSACTIONS_END_DATE = "01/01/9999"
 
-async function getAllTransactions() {
+Mint.prototype.getAllTransactions = async function() {
   let mint = await peppermint(mintConfig.username, mintConfig.password, mintConfig.ius_session, mintConfig.thx_guid)
   let startingOffset = 0
   let allT = []
@@ -41,4 +41,11 @@ function getAllTransactionsQuery(offset) {
   };
 }
 
-module.exports = {getAllTransactions}
+function Mint() {}
+
+function init(config) {
+  mintConfig = config
+  return new Mint()
+}
+
+module.exports = init
