@@ -88,7 +88,8 @@ describe('expensify', function () {
         created: expenses[0].date,
         modifiedMerchant: "",
         modifiedAmount: "",
-        modifiedCreated: ""
+        modifiedCreated: "",
+        reportName: "New Report"
       }));
   })
 });
