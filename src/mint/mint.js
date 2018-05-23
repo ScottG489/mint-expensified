@@ -12,7 +12,6 @@ async function getAllTransactions() {
     let proceed = true;
     if (txns) {
       txns.forEach(function (txn) {
-        console.log(txn.date, txn.merchant, txn.amount);
         allT.push(txn)
       });
 
