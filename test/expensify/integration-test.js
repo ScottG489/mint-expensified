@@ -90,7 +90,8 @@ describe('expensify', function () {
         modifiedAmount: "",
         modifiedCreated: "",
         reportName: "New Report"
-      }));
+      })
+    );
   })
 });
 
