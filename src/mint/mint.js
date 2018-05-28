@@ -1,11 +1,11 @@
 const peppermint = require('pepper-mint')
 let mintConfig
+let pm
 
 const TRANSACTIONS_START_DATE = "04/02/2017"
 const TRANSACTIONS_END_DATE = "01/01/9999"
 
 Mint.prototype.getAllTransactions = async function() {
-  let mint = await peppermint(mintConfig.username, mintConfig.password, mintConfig.ius_session, mintConfig.thx_guid)
   let startingOffset = 0
   let allT = []
   let iterate = function (txns) {
@@ -23,12 +23,32 @@ Mint.prototype.getAllTransactions = async function() {
     }
 
     if (proceed) {
-      return mint.getTransactions(getAllTransactionsQuery(startingOffset)).then(iterate);
+      return pm.getTransactions(getAllTransactionsQuery(startingOffset)).then(iterate);
     }
   }
 
   await iterate()
   return allT
+}
+
+Mint.prototype.createTransaction = async function(args) {
+  return await pm.createTransaction(args)
+}
+
+Mint.prototype.deleteTransaction = async function(args) {
+  return await pm.deleteTransaction(args)
+}
+
+Mint.prototype.getTransactions = async function(args) {
+  return await pm.getTransactions(args)
+}
+
+Mint.prototype.editTransaction = async function(args) {
+  return pm.editTransaction(args)
+}
+
+Mint.prototype.getTags = async function() {
+  return pm.getTags()
 }
 
 function getAllTransactionsQuery(offset) {
@@ -42,6 +62,10 @@ function getAllTransactionsQuery(offset) {
 }
 
 function Mint() {}
+// TODO: I don't like how you need to call init() after class instantiation
+Mint.prototype.init = async function() {
+  pm = await peppermint(mintConfig.username, mintConfig.password, mintConfig.ius_session, mintConfig.thx_guid)
+}
 
 function init(config) {
   mintConfig = config
