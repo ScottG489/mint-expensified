@@ -1,12 +1,7 @@
-const mintConfig = require('../config').mint
-const mint = new require('./mint/mint')(mintConfig)
+let comparator = new require('../src/expenseToTransactionComparator')()
 
-// let expensifyConfig = require('../test-config').expensify
-let expensifyConfig = require('../config').expensify
-// TODO: I believe this is causing 'npm test' to fail and im not sure why
-const expensify = new require('./expensify/expensify')(expensifyConfig)
+let mintyConfig
 
-const entities = new require('html-entities').XmlEntities;
 
 async function main() {
   let allExpenses = expensify.getAllExpenses()
@@ -21,7 +16,7 @@ async function match(allTrans, allExpenses) {
     })
     .map((expense) => {
       let transactionSearchResults = allTrans.filter((transaction) => {
-        return areEqual(transaction, expense)
+        return comparator.areEqual(transaction, expense)
       })
       if (expense.modifiedAmount !== "" && expense.amount !== expense.modifiedAmount) {
         console.log("Expense with a modified amount. This likely means that it was only partially reimbursed and you should split this transaction in mint")
@@ -50,38 +45,12 @@ async function match(allTrans, allExpenses) {
     })
 }
 
-// Sanity check
-function areEqual(transaction, expense) {
-  // TODO: Getting pretty hacky here with the decode. We should probably transform to our own models before doing comparisons?
-  return transaction.omerchant.toUpperCase().replace(/\s\s+/g, ' ').substring(0, 32) === entities.decode(expense.merchant).toUpperCase()
-    && formatDate(transaction.odate) === expense.created
-    && transaction.amount.replace(/[$.,]/g, "") === expense.amount
+
+function Minty() {}
+
+function init(config) {
+  mintyConfig = config
+  return new Minty()
 }
 
-function formatDate(dateString) {
-  if (!dateString.includes('/')) {
-    return formatFromCurrentYearStyle(dateString)
-  }
-  let date = new Date(dateString)
-  let year = date.getFullYear().toString()
-  let month = padLeadingZero(date.getMonth() + 1)
-  let day = padLeadingZero(date.getDate())
-  return `${year}-${month}-${day}`
-}
-
-// This handles dates formatted such as "May 4" where the current year is assumed
-function formatFromCurrentYearStyle(currentYearStyledDate) {
-  // TODO: Parsing a date free form like this is a bad idea and discouraged in docs
-  let date = new Date(currentYearStyledDate)
-  date.setFullYear(new Date().getFullYear())
-  let year = date.getFullYear().toString()
-  let month = padLeadingZero(date.getMonth() + 1)
-  let day = padLeadingZero(date.getDate())
-  return `${year}-${month}-${day}`
-}
-
-function padLeadingZero(number) {
-  return `0${number.toString()}`.slice(-2)
-}
-
-module.exports = main
+module.exports = init
