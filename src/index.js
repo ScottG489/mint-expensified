@@ -3,14 +3,26 @@ let comparator = new require('../src/expenseToTransactionComparator')()
 let mintyConfig
 
 
-async function main() {
-  let allExpenses = expensify.getAllExpenses()
-  let allTrans = mint.getAllTransactions()
-  return match(await allTrans, await allExpenses)
+Minty.prototype.getMatchResults = function(allTrans, allExpenses) {
+  return allExpenses
+    .filter((expense) => {
+      return !expense.reportName.endsWith("Transit/Mobile/Internet")
+    })
+    .map((expense) => {
+      let transactionSearchResults = allTrans.filter((transaction) => {
+        return comparator.areEqual(transaction, expense)
+      })
+
+      return {
+        expense: expense,
+        matchingTransactions: transactionSearchResults,
+        expenseAmoutWasAltered: expense.modifiedAmount !== "" && expense.amount !== expense.modifiedAmount
+      }
+    })
 }
 
 async function match(allTrans, allExpenses) {
-  return await allExpenses
+  return allExpenses
     .filter((expense) => {
       return !expense.reportName.endsWith("Transit/Mobile/Internet")
     })
