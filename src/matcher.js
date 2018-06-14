@@ -10,6 +10,7 @@ Matcher.prototype.tagMatchingTransactions = async function (allTrans, allExpense
     .map(async (results) => {
       if (!results.expenseAmountWasAltered) {
         let tag = allTags.find((tag) => {
+          // TODO: This shouldn't be hardcoded
           return tag.value === "Vacation"
         })
 
@@ -30,6 +31,7 @@ Matcher.prototype.tagMatchingTransactions = async function (allTrans, allExpense
 Matcher.prototype.getMatchResults = function(allTrans, allExpenses) {
   return allExpenses
     .filter((expense) => {
+      // TODO: This shouldn't be hardcoded
       return !expense.reportName.endsWith("Transit/Mobile/Internet")
     })
     .map((expense) => {

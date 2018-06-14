@@ -33,6 +33,7 @@ Expensify.prototype.getAllExpenses = async function () {
     inputSettings: {
       type: "combinedReportData",
       filters: {
+        // TODO: This shouldn't be hardcoded
         startDate: "2000-01-01"
       }
     }

@@ -2,6 +2,7 @@ const peppermint = require('pepper-mint')
 let mintConfig
 let pm
 
+// TODO: These should not be hardcoded
 const TRANSACTIONS_START_DATE = "04/02/2017"
 const TRANSACTIONS_END_DATE = "01/01/9999"
 
