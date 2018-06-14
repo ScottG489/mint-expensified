@@ -8,6 +8,15 @@ Matcher.prototype.tagMatchingTransactions = async function (allTrans, allExpense
   return await Promise.all(
     this.getMatchResults(allTrans, allExpenses)
     .map(async (results) => {
+     /**
+      * TODO: Just because the amount was altered does this mean we never want to update any potentially matching
+      * TODO:   transactions? If a transaction is split so that the amount is correct then it should match correctly
+      * TODO:   and rightly be updated as being reimbursed. Verify that all modified amount expenses also don't have
+      * TODO:   any matches (as this is expected) and then only call them out as a problem if they have a modified
+      * TODO:   amount AND no matching transaction as this is really what indicates that they are in need of being
+      * TODO:   split in mint. Once they are split, they should match like any other transaction and we don't really
+      * TODO:   care that they were ever modified as expenses.
+      */
       if (!results.expenseAmountWasAltered) {
         let tag = allTags.find((tag) => {
           // TODO: This shouldn't be hardcoded
