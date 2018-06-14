@@ -44,11 +44,11 @@ Mint.prototype.getTransactions = async function(args) {
 }
 
 Mint.prototype.editTransaction = async function(args) {
-  return pm.editTransaction(args)
+  return await pm.editTransaction(args)
 }
 
 Mint.prototype.getTags = async function() {
-  return pm.getTags()
+  return await pm.getTags()
 }
 
 function getAllTransactionsQuery(offset) {
