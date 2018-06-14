@@ -1,7 +1,39 @@
 let comparator = new require('../src/expenseToTransactionComparator')()
 
-let mintyConfig
+let mint
+let expensify
+let allTags
 
+// async function main() {
+//   let allExpenses = expensify.getAllExpenses()
+//   let allTrans = mint.getAllTransactions()
+//   let tags = await mint.getTags()
+//   let matches = getMatchResults(await allTrans, await allExpenses)
+//   return match(await allTrans, await allExpenses)
+// }
+
+Minty.prototype.tagMatchingTransactions = async function (allTrans, allExpenses) {
+  return await Promise.all(
+    this.getMatchResults(allTrans, allExpenses)
+    .map(async (results) => {
+      if (!results.expenseAmountWasAltered) {
+        let tag = allTags.find((tag) => {
+          return tag.value === "Vacation"
+        })
+
+        await Promise.all(results.matchingTransactions.map(async (transaction) => {
+            return await mint.editTransaction({
+              id: transaction.id,
+              tags: [tag.id]
+            })
+          })
+        )
+      }
+
+      return results
+    })
+  )
+}
 
 Minty.prototype.getMatchResults = function(allTrans, allExpenses) {
   return allExpenses
@@ -16,7 +48,7 @@ Minty.prototype.getMatchResults = function(allTrans, allExpenses) {
       return {
         expense: expense,
         matchingTransactions: transactionSearchResults,
-        expenseAmoutWasAltered: expense.modifiedAmount !== "" && expense.amount !== expense.modifiedAmount
+        expenseAmountWasAltered: expense.modifiedAmount !== "" && expense.amount !== expense.modifiedAmount
       }
     })
 }
@@ -59,9 +91,14 @@ async function match(allTrans, allExpenses) {
 
 
 function Minty() {}
+// TODO: I don't like how you need to call init() after class instantiation
+Minty.prototype.init = async function() {
+  allTags = await mint.getTags()
+}
 
-function init(config) {
-  mintyConfig = config
+function init(mintClient, expensifyClient) {
+  mint = mintClient
+  expensify = expensifyClient
   return new Minty()
 }
 
