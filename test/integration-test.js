@@ -4,7 +4,7 @@ const mint = new require('../src/mint/mint')(mintConfig)
 let expensifyConfig = require('../test-config').expensify
 const expensify = new require('../src/expensify/expensify')(expensifyConfig)
 
-let minty = new require('../src/index')(mint, expensify)
+let matcher = new require('../src/matcher')(mint, expensify)
 let comparator = new require('../src/expenseToTransactionComparator')()
 
 let chai = require('chai');
@@ -35,7 +35,7 @@ describe('mint-expensified', function () {
     let allTrans = await createAndGetAllTransactions(newTransaction);
     await deleteTransactions(allTrans);
 
-    let matchResults = minty.getMatchResults(allTrans, expenses)[0]
+    let matchResults = matcher.getMatchResults(allTrans, expenses)[0]
 
     let expenseMatch = matchResults.expense
     let transactionMatch = matchResults.matchingTransactions[0]
@@ -53,7 +53,7 @@ describe('mint-expensified', function () {
   it('should update transactions with matching expenses', async function () {
     this.timeout(30000);
     await mint.init()
-    await minty.init()
+    await matcher.init()
 
     let newExpenses = [
       {
@@ -73,7 +73,7 @@ describe('mint-expensified', function () {
     let expenses = await createAndGetReportExpenses(newExpenses)
     let allTrans = await createAndGetAllTransactions(newTransaction)
 
-    let matchResult = (await minty.tagMatchingTransactions(allTrans, expenses))[0]
+    let matchResult = (await matcher.tagMatchingTransactions(allTrans, expenses))[0]
     let updatedTrans = (await getAllTransactions())[0]
     await deleteTransactions(allTrans);
 
