@@ -6,12 +6,25 @@ const expensify = new require('../src/expensify/expensify')(expensifyConfig)
 
 let matcher = new require('../src/matcher')(mint, expensify)
 
+let args = require('commander');
+
+args
+  .version('0.1.0')
+  .option('-n, --no-update', "Don't update transactions")
+  .parse(process.argv)
+
 async function main() {
   await mint.init()
   await matcher.init()
   let allExpenses = expensify.getAllExpenses()
   let allTrans = mint.getAllTransactions()
-  let matchResults = matcher.getMatchResults(await allTrans, await allExpenses)
+
+  let matchResults
+  if (args.update) {
+    matchResults = await matcher.tagMatchingTransactions(await allTrans, await allExpenses)
+  } else {
+    matchResults = matcher.getMatchResults(await allTrans, await allExpenses)
+  }
 
   printExpensesWithNoMatchingTransactions(matchResults)
   printExpensesWithModifiedAmount(matchResults)
