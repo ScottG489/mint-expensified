@@ -19,6 +19,8 @@ async function main() {
 }
 
 function printMatchResults(matchResults) {
+  console.log("All expenses with matching transaction(s) (if any):")
+
   matchResults.forEach((result) => {
     console.log(result.expense.merchant + " | " + result.expense.amount + " | " + result.expense.created)
     result.matchingTransactions.forEach((transaction) => {
