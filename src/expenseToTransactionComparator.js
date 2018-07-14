@@ -4,13 +4,7 @@ ExpenseToTransactionComparator.prototype.areEqual = function(transaction, expens
   // TODO: We should probably transform to our own models before doing comparisons for simplicity?
   return normalizeTransactionMerchant(transaction.omerchant) === normalizeExpenseMerchant(expense.merchant)
     && normalizeTransactionDate(transaction.odate) === expense.created
-    /**
-     * TODO: Do we actually want to compare on modified amount if it's been set? I believe we do because if there is a
-     * TODO:   modified amount then this means it is the amount which was actually reimbursed and is what the split
-     * TODO:   transaction should be in mint which we want to match against. Otherwise, I don't think any expenses
-     * TODO:   will ever match which have a modified amount since we never look at it when trying to match.
-     * */
-    && normalizeTransactionAmount(transaction.amount) === expense.amount
+    && normalizeTransactionAmount(transaction.amount) === getExpensedAmount(expense)
 }
 
 function normalizeTransactionMerchant(transactionMerchant) {
@@ -60,6 +54,11 @@ function padLeadingZero(number) {
 function normalizeTransactionAmount(transactionAmount) {
   // Formatted dollar amount ($1,234.56) to cents
   return transactionAmount.replace(/[$.,]/g, "");
+}
+
+function getExpensedAmount(expense) {
+  // TODO: If modifiedAmount is undefined, null, etc we will use this as the value when we don't actually want to
+  return expense.modifiedAmount === "" ? expense.amount : expense.modifiedAmount
 }
 
 function ExpenseToTransactionComparator() {}
