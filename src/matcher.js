@@ -32,6 +32,9 @@ Matcher.prototype.getMatchResults = function(allTrans, allExpenses) {
       // TODO: This shouldn't be hardcoded
       return !expense.reportName.endsWith("Transit/Mobile/Internet")
     })
+    .filter((expense) => {
+      return expense.reimbursable
+    })
     .map((expense) => {
       let transactionSearchResults = allTrans.filter((transaction) => {
         return comparator.areEqual(transaction, expense)

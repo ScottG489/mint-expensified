@@ -9,6 +9,7 @@
         "modifiedMerchant": "${expense.modifiedMerchant}",
         "modifiedAmount": "${expense.modifiedAmount}",
         "modifiedCreated": "${expense.modifiedCreated}",
+        "reimbursable": ${expense.reimbursable?string("true", "false")},
         "reportName": "${report.reportName}"
 }<#if expense?has_next>,</#if>
 
