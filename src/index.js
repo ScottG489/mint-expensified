@@ -1,7 +1,7 @@
-const mintConfig = require('../test-config').mint
+const mintConfig = require('../config').mint
 const mint = new require('../src/mint/mint')(mintConfig)
 
-let expensifyConfig = require('../test-config').expensify
+let expensifyConfig = require('../config').expensify
 const expensify = new require('../src/expensify/expensify')(expensifyConfig)
 
 let matcher = new require('../src/matcher')(mint, expensify)
@@ -27,7 +27,7 @@ async function main() {
   }
 
   printExpensesWithNoMatchingTransactions(matchResults)
-  printExpensesWithModifiedAmount(matchResults)
+  printExpensesWithModifiedAmountAndNoMatchingTransactions(matchResults)
   printMatchResults(matchResults)
 }
 
@@ -46,12 +46,12 @@ function printMatchResults(matchResults) {
 }
 
 function printExpensesWithNoMatchingTransactions(matchResults) {
-  console.log("No matching transaction found for expenses:")
+  console.log("No matching transaction found for expenses whos amounts haven't been modified. This likely means there is something wrong with the transaction/expense that needs to be investigated:")
 
   console.group()
   matchResults
     .filter((result) => {
-      return result.matchingTransactions.length === 0
+      return result.matchingTransactions.length === 0 && result.expenseAmountWasAltered === false
     })
     .forEach((result) => {
     console.log(result.expense.merchant + " | " + result.expense.amount + " | " + result.expense.created)
@@ -60,16 +60,16 @@ function printExpensesWithNoMatchingTransactions(matchResults) {
   console.log()
 }
 
-function printExpensesWithModifiedAmount(matchResults) {
-  console.log("Expenses with a modified amount. This likely means that it was only partially reimbursed and you should split this transaction in mint")
+function printExpensesWithModifiedAmountAndNoMatchingTransactions(matchResults) {
+  console.log("Expenses with no matching transactions and a modified amount. This likely means that it was only partially reimbursed and you should split this transaction in mint")
 
   console.group()
   matchResults
     .filter((result) => {
-      return result.expense.modifiedAmount !== "" && result.expense.amount !== result.expense.modifiedAmount
+      return result.expenseAmountWasAltered && result.matchingTransactions.length === 0
     })
     .forEach((result) => {
-      console.log(result.expense.merchant + " | " + result.expense.amount + " | " + result.expense.created)
+      console.log(result.expense.merchant + " | " + result.expense.amount + " | " + result.expense.modifiedAmount + " | " + result.expense.created)
     })
   console.groupEnd()
   console.log()
