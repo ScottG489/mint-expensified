@@ -86,6 +86,10 @@ describe('expensify', function () {
         amount: expenses[0].amount,
         // TODO: Why does this pass? Should we parse it as a number?
         created: expenses[0].date,
+        /**
+         * TODO: Modified merchant and created (date) can likely be removed from expensify_template.ftl and from here as
+         * TODO:   they aren't referenced anywhere.
+         */
         modifiedMerchant: "",
         modifiedAmount: "",
         modifiedCreated: "",
