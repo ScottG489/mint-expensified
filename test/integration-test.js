@@ -55,6 +55,8 @@ describe('mint-expensified', function () {
     await mint.init()
     await matcher.init()
 
+    let tagName = "Vacation"
+
     let newExpenses = [
       {
         date: "2000-01-01",
@@ -73,7 +75,7 @@ describe('mint-expensified', function () {
     let expenses = await createAndGetReportExpenses(newExpenses)
     let allTrans = await createAndGetAllTransactions(newTransaction)
 
-    let matchResult = (await matcher.tagMatchingTransactions(allTrans, expenses))[0]
+    let matchResult = (await matcher.tagMatchingTransactions(allTrans, expenses, tagName))[0]
     let updatedTrans = (await getAllTransactions())[0]
     await deleteTransactions(allTrans);
 
@@ -88,8 +90,7 @@ describe('mint-expensified', function () {
      * TODO:   model types.
      */
     comparator.areEqual(transactionMatch, expenseMatch).should.equal(true)
-    // TODO: Right now "Vacation" is hardcoded here as well as in the class under test. This should be fixed.
-    updatedTrans.labels.filter((trans) => trans.name === "Vacation").should.have.lengthOf(1)
+    updatedTrans.labels.filter((trans) => trans.name === tagName).should.have.lengthOf(1)
   })
 });
 

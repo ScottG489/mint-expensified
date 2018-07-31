@@ -19,9 +19,10 @@ async function main() {
   let allExpenses = expensify.getAllExpenses()
   let allTrans = mint.getAllTransactions()
 
+  let tagName = "Reimbursable"
   let matchResults
   if (args.update) {
-    matchResults = await matcher.tagMatchingTransactions(await allTrans, await allExpenses)
+    matchResults = await matcher.tagMatchingTransactions(await allTrans, await allExpenses, tagName)
   } else {
     matchResults = matcher.getMatchResults(await allTrans, await allExpenses)
   }

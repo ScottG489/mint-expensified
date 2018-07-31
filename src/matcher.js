@@ -4,13 +4,12 @@ let mint
 let expensify
 let allTags
 
-Matcher.prototype.tagMatchingTransactions = async function (allTrans, allExpenses) {
+Matcher.prototype.tagMatchingTransactions = async function (allTrans, allExpenses, tagName) {
   return await Promise.all(
     this.getMatchResults(allTrans, allExpenses)
     .map(async (results) => {
       let tag = allTags.find((tag) => {
-        // TODO: This shouldn't be hardcoded
-        return tag.value === "Vacation"
+        return tag.value === tagName
       })
 
       await Promise.all(results.matchingTransactions.map(async (transaction) => {
