@@ -93,6 +93,7 @@ describe('expensify', function () {
         modifiedMerchant: "",
         modifiedAmount: "",
         modifiedCreated: "",
+        reimbursable: true,
         reportName: "New Report"
       })
     );
